@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from "cloudinary"; // You use this to upload and manage media.
 
 import { config } from "dotenv";
-config(); // Load your .env file so you can use your Cloudinary credentials securely from process.env.
+config(); //Load your .env file so you can use your Cloudinary credentials securely from process.env.
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
