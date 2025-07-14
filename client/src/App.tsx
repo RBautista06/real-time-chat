@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Navbar from "./component/Navbar";
 import HomePage from "./pages/HomePage";
 import SignUpPage from "./pages/SignUpPage";
@@ -9,6 +9,7 @@ import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
 import ProtectRoute from "./component/routeGuard/AuthRoute";
 import AuthRoute from "./component/routeGuard/ProtectRoute";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -61,6 +62,7 @@ const App = () => {
           }
         />
       </Routes>
+      <Toaster />
     </div>
   );
 };

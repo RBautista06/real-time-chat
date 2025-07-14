@@ -10,7 +10,7 @@ const AuthRoute = ({ children }: Props) => {
   const { authUser } = useAuthStore();
 
   if (authUser) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />; // or wherever your main app starts
   }
 
   return <>{children}</>;
