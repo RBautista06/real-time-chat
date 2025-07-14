@@ -10,7 +10,7 @@ const ProtectRoute = ({ children }: Props) => {
   const { authUser } = useAuthStore();
 
   if (!authUser) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;

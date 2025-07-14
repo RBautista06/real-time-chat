@@ -15,6 +15,8 @@ interface AuthStore {
     email: string;
     password: string;
   }) => Promise<void>;
+  login: (formData: { email: string; password: string }) => Promise<void>;
+  logout: () => Promise<void>;
 }
 export const useAuthStore = create<AuthStore>((set: any) => ({
   authUser: null,
@@ -42,9 +44,30 @@ export const useAuthStore = create<AuthStore>((set: any) => ({
       set({ authUser: res.data });
       toast.success("Account create Succesfully");
     } catch (error: any) {
-      toast.error(error.response.message);
+      toast.error(error.response.data.error);
     } finally {
       set({ isSigningUp: false });
+    }
+  },
+  login: async (data) => {
+    try {
+      set({ isLogingIn: true });
+      const res = await axiosInstance.post("/auth/login", data);
+      set({ authUser: res.data });
+      toast.success("Logged In Successfully");
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+    } finally {
+      set({ isLogingIn: false });
+    }
+  },
+  logout: async () => {
+    try {
+      const res = await axiosInstance.post("/auth/logout");
+      set({ authUser: null });
+      toast.success("Logged out Successfully");
+    } catch (error: any) {
+      toast.error(error.response.data.error);
     }
   },
 }));

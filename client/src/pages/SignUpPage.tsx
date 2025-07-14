@@ -1,6 +1,14 @@
 import type React from "react";
 
-import { MessageSquare, Eye, EyeOff, User, Mail, Lock } from "lucide-react";
+import {
+  MessageSquare,
+  Eye,
+  EyeOff,
+  User,
+  Mail,
+  Lock,
+  Loader2,
+} from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import RightSideHero from "../component/RightSideHero";
@@ -40,7 +48,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="mt-10 grid lg:grid-cols-2">
       {/* Left side - Form */}
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
         <div className="w-full max-w-md space-y-8">
@@ -141,7 +149,7 @@ const SignUpPage = () => {
               className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full">
               {isSigningUp ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  <Loader2 className="animate-spin size-5 mr-2" />
                   Creating Account...
                 </>
               ) : (
