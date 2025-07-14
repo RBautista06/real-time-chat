@@ -10,9 +10,11 @@ import { useEffect } from "react";
 import ProtectRoute from "./component/routeGuard/AuthRoute";
 import AuthRoute from "./component/routeGuard/ProtectRoute";
 import { Toaster } from "react-hot-toast";
+import { useThemeStore } from "./store/useThemeStore";
 
 const App = () => {
   const { checkAuth, isCheckingAuth } = useAuthStore();
+  const { theme } = useThemeStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
@@ -24,7 +26,7 @@ const App = () => {
       </div>
     );
   return (
-    <div>
+    <div data-theme={theme}>
       <Navbar />
       <Routes>
         <Route
