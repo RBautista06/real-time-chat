@@ -1,4 +1,4 @@
-import { MessageSquare, Settings, User, Bell, LogOut } from "lucide-react";
+import { MessageSquare, Settings, User,  LogOut } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
 
