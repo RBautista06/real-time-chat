@@ -93,7 +93,7 @@ export const updateProfile = async (req, res) => {
       // the uploadResponse.secure_url should look like something like this = "https://res.cloudinary.com/demo/image/upload/new_pic.jpg"
       { new: true } // it tells mongoose to return the updated user document, not the old one
     );
-    return res.status(200).json({ message: "Updated User" });
+    return res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error updating Profile: ", error);
     return res.status(500).json({ error: "Internal Server Error" });

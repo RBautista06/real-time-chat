@@ -17,8 +17,7 @@ const App = () => {
     checkAuth();
   }, [checkAuth]);
 
-  console.log(authUser);
-  if (!isCheckingAuth && !authUser)
+  if (isCheckingAuth)
     return (
       <div className="flex items-center justify-center h-screen">
         <span className="loading loading-dots loading-xl"></span>
