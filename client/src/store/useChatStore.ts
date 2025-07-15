@@ -9,9 +9,18 @@ export type SelectedUser = {
   profilePic: string;
 };
 
+type Message = {
+  _id: string;
+  text: string;
+  senderId: SelectedUser;
+  recieverId: SelectedUser;
+  image?: string;
+  createdAt?: string;
+};
+
 // Zustand store interface
 interface ChatProps {
-  messages: string[] | null;
+  messages: Message[];
   users: SelectedUser[] | null;
   selectedUsers: SelectedUser | null;
   onlineUsers: string[];
@@ -19,11 +28,12 @@ interface ChatProps {
   isMessagesLoading: boolean;
   getUsers: () => Promise<void>;
   getMessages: (userId: string) => Promise<void>;
-  setSelectedUser: (selectedUsers: SelectedUser) => void;
+  setSelectedUser: (selectedUsers: SelectedUser | null) => void;
+  sendMessage: (messageData: any) => Promise<void>;
 }
 
 // Zustand store definition
-export const useChatStore = create<ChatProps>((set) => ({
+export const useChatStore = create<ChatProps>((set, get) => ({
   messages: [],
   users: [],
   selectedUsers: null,
@@ -54,6 +64,18 @@ export const useChatStore = create<ChatProps>((set) => ({
       set({ isMessagesLoading: false });
     }
   },
-
-  setSelectedUser: (selectedUsers: SelectedUser) => set({ selectedUsers }),
+  sendMessage: async (messageData: any) => {
+    const { selectedUsers, messages } = get();
+    try {
+      const res = await axiosInstance.post(
+        `/messages/send/${selectedUsers?._id}`,
+        messageData
+      );
+      set({ messages: [...messages, res.data] });
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "Failed to fetch messages");
+    }
+  },
+  setSelectedUser: (selectedUsers: SelectedUser | null) =>
+    set({ selectedUsers }),
 }));
