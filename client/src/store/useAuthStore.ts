@@ -110,20 +110,24 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
   connectSocket: () => {
-    const { authUser } = get(); // Get the currently authenticated user from Zustand
-    // Don't reconnect if:
-    // - No user is logged in
-    // - Socket already exists and is connected
-    if (!authUser || get().socket?.connected) return;
-    // Create a new socket connection and send the userId via query param
+    const { authUser } = get();
+
+    if (!authUser || !authUser._id || get().socket?.connected) return;
+
+    // Sanitize ID on the frontend as well (avoid ":" or undefined)
+    const safeUserId = String(authUser._id).match(/^[\w-]+$/)
+      ? authUser._id
+      : "anonymous";
+
     const socket = io(BASE_URL, {
       query: {
-        userId: authUser._id,
+        userId: safeUserId,
       },
     });
-    socket.connect(); // Manually establish the socket connection
-    set({ socket }); // Save the socket to Zustand store
-    // Listen for online user updates from server and store in Zustand
+
+    socket.connect();
+    set({ socket });
+
     socket.on("getOnlineUsers", (userIds: string[]) => {
       set({ onlineUsers: userIds });
     });
