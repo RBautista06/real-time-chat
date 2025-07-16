@@ -1,46 +1,44 @@
 import { Server } from "socket.io";
-import http from "http";
+import http from "http"; // Built-in Node module to create HTTP server
 import express from "express";
 
-const app = express();
-const server = http.createServer(app);
+const app = express(); // Initialize Express app
+const server = http.createServer(app); // Wrap Express in HTTP server
 
-// Attach Socket.IO to HTTP server with CORS
+// Attach Socket.IO to the HTTP server with CORS configuration
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://your-app.onrender.com"], // Allow local + deployed frontend
+    origin: ["http://localhost:5173"], // Allow frontend running at this origin
   },
 });
 
-// Used to store which socket ID belongs to which user
-const userSocketMap = {};
-
-// Helper to get socket ID by user ID
 export function getRecieverId(userId) {
   return userSocketMap[userId];
 }
 
+// Used to store which socket ID belongs to which user
+const userSocketMap = {};
+
 io.on("connection", (socket) => {
-  const rawUserId = socket.handshake.query.userId;
+  console.log("A user connected", socket.id);
 
-  // Validate userId (alphanumeric, underscore, hyphen)
-  if (rawUserId && /^[\w-]+$/.test(rawUserId)) {
-    userSocketMap[rawUserId] = socket.id;
-    console.log("✅ User connected:", rawUserId, socket.id);
-  } else {
-    console.warn("⚠️ Invalid or missing userId in handshake:", rawUserId);
-    socket.disconnect(); // Prevent broken connections
-    return;
-  }
+  // Get userId from socket query (sent by client during connection)
+  const userId = socket.handshake.query.userId;
 
-  // Send list of online users
+  // If userId exists, map it to the socket ID
+  if (userId) userSocketMap[userId] = socket.id;
+
+  // Broadcast current online users to all connected clients
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
+  // Handle when a user disconnects
   socket.on("disconnect", () => {
-    console.log("⛔ User disconnected:", rawUserId);
-    delete userSocketMap[rawUserId];
+    console.log("A user disconnected", socket.id);
+
+    // Remove user from map and broadcast updated list
+    delete userSocketMap[userId];
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
 
-export { io, app, server };
+export { io, app, server }; // Export server, app, and io for use elsewhere
