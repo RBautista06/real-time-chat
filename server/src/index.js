@@ -6,10 +6,12 @@ import cookieParser from "cookie-parser";
 import { connectionDB } from "./lib/db.js";
 import cors from "cors";
 import { app, io, server } from "./lib/socket.js"; // import app from the socket so it will be real time
-
+import path from "path";
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
+const __dirname = path.resolve();
+
 app.use(express.json()); // converts the request body to json
 app.use(cookieParser());
 app.use(
@@ -21,6 +23,14 @@ app.use(
 
 app.use("/api/auth", authRoutes); // routes for signup, login, logout
 app.use("/api/messages", messageRoutes);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client", "dist", "index.html"));
+  });
+}
 
 server.listen(PORT, () => {
   console.log(`server running in Port: ${PORT}`);

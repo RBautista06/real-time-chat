@@ -1,0 +1,21 @@
+{
+  "name": "real-time-chat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix server && npm install --prefix client && npm run build --prefix client",
+    "start": "npm run start --prefix server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RBautista06/real-time-chat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RBautista06/real-time-chat/issues"
+  },
+  "homepage": "https://github.com/RBautista06/real-time-chat#readme",
+  "description": ""
+}
