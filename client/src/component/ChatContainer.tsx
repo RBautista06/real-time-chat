@@ -7,14 +7,29 @@ import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../utils.ts/TimeFormater";
 
 const ChatContainer = () => {
-  const { messages, getMessages, isMessagesLoading, selectedUsers } =
-    useChatStore();
+  const {
+    messages,
+    getMessages,
+    isMessagesLoading,
+    selectedUsers,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  } = useChatStore();
   const { authUser } = useAuthStore();
+
   useEffect(() => {
     if (selectedUsers) {
-      getMessages(selectedUsers._id);
+      getMessages(selectedUsers._id); // Fetch previous messages when a user is selected
+      subscribeToMessages(); // Begin listening for real-time messages from the server
+
+      return () => unsubscribeFromMessages(); // Stop listening when component unmounts or selected user changes
     }
-  }, [selectedUsers, getMessages]);
+  }, [
+    selectedUsers, // Triggers the effect when the selected user changes
+    getMessages,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  ]);
 
   if (isMessagesLoading) {
     return (

@@ -4,7 +4,7 @@ import { useChatStore } from "../store/useChatStore";
 
 const ChatHeader = () => {
   const { selectedUsers, setSelectedUser } = useChatStore();
-  // const { onlineUsers } = useAuthStore();
+  const { onlineUsers } = useAuthStore();
 
   // ✅ Guard against null: If no user is selected, don't render the header.
   if (!selectedUsers) {
@@ -29,9 +29,8 @@ const ChatHeader = () => {
           <div>
             <h3 className="font-medium">{selectedUsers.fullName}</h3>
             <p className="text-sm text-base-content/70">
-              {/* {onlineUsers ? "Online" : "Offline"} */}
+              {onlineUsers?.includes(selectedUsers._id) ? "Online" : "Offline"}
               {/* this is just a placeholder */}
-              Online
             </p>
           </div>
         </div>

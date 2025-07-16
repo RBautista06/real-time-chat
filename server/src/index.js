@@ -5,9 +5,10 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { connectionDB } from "./lib/db.js";
 import cors from "cors";
+import { app, io, server } from "./lib/socket.js"; // import app from the socket so it will be real time
 
 dotenv.config();
-const app = express();
+
 const PORT = process.env.PORT || 3000;
 app.use(express.json()); // converts the request body to json
 app.use(cookieParser());
@@ -21,7 +22,7 @@ app.use(
 app.use("/api/auth", authRoutes); // routes for signup, login, logout
 app.use("/api/messages", messageRoutes);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`server running in Port: ${PORT}`);
   connectionDB();
 });
