@@ -1,34 +1,27 @@
 import express from "express";
-import http from "http";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import path from "path";
-
-import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
-import { setupSocket } from "./lib/socket.js";
-
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import { connectionDB } from "./lib/db.js";
+import cors from "cors";
+import { app, io, server } from "./lib/socket.js"; // import app from the socket so it will be real time
+import path from "path";
 dotenv.config();
-
-const app = express();
-const server = http.createServer(app);
-const io = setupSocket(server); // 👍 attach socket to same HTTP server
 
 const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
-app.use(express.json());
+app.use(express.json()); // converts the request body to json
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    credentials: true,
+    origin: "http://localhost:5173", // ✅ Only allow requests from this origin (your frontend)
+    credentials: true, // ✅ Allow cookies (like JWT) to be sent with the request
   })
 );
 
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes); // routes for signup, login, logout
 app.use("/api/messages", messageRoutes);
 
 if (process.env.NODE_ENV === "production") {
@@ -40,6 +33,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 server.listen(PORT, () => {
-  console.log("Server running on port:", PORT);
-  connectDB();
+  console.log(`server running in Port: ${PORT}`);
+  connectionDB();
 });
