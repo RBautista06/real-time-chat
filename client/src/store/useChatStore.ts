@@ -88,6 +88,7 @@ export const useChatStore = create<ChatProps>((set, get) => ({
     // Set up a listener for the "newMessage" event from the server
     socket?.on("newMessage", (newMessage) => {
       // Append the new message to the existing messages array
+      if (newMessage.senderId !== selectedUsers._id) return;
       set({
         messages: [...get().messages, newMessage],
       });

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useChatStore } from "../store/useChatStore";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
@@ -16,6 +16,7 @@ const ChatContainer = () => {
     unsubscribeFromMessages,
   } = useChatStore();
   const { authUser } = useAuthStore();
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (selectedUsers) {
@@ -30,6 +31,15 @@ const ChatContainer = () => {
     subscribeToMessages,
     unsubscribeFromMessages,
   ]);
+  useEffect(() => {
+    // Run this effect whenever the messages array changes
+    if (messageEndRef && messages) {
+      // If the ref exists and messages have been loaded
+      messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      // Scroll the referenced element into view smoothly (usually the bottom of the chat)
+    }
+  }, [messages]);
+  // Dependency array: run this effect every time the messages array updates
 
   if (isMessagesLoading) {
     return (
@@ -49,7 +59,8 @@ const ChatContainer = () => {
             key={message._id}
             className={`chat ${
               message.senderId === authUser._id ? "chat-end" : "chat-start"
-            }`}>
+            }`}
+            ref={messageEndRef}>
             <div className="chat-image avatar">
               <div className="size-10 rounded-full border">
                 <img

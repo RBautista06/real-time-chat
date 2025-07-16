@@ -58,10 +58,18 @@ export const sendMessage = async (req, res) => {
     await newMessage.save();
 
     // realtime functionality goes here => socket.io
-    const recieverSocketId = getRecieverId(recieverId);
+    //"io.to" will only broadcast it to a certain reciever
+
+    const recieverSocketId = getRecieverId(recieverId); // Look up the socket ID of the recipient using their user ID.
+
+    // This function should return the current socket ID associated with the user if they are online.
     if (recieverSocketId) {
-      io.to(recieverId).emit("newMessage", newMessage); // "to" will only send it to reciever id
+      // Only proceed if the recipient is connected (has a valid socket ID)
+      io.to(recieverSocketId).emit("newMessage", newMessage);
+      // Send the new message to the specific socket (user) using Socket.IO.
+      // Only the intended recipient will receive this event in real time.
     }
+
     return res.status(201).json(newMessage);
   } catch (error) {
     console.log("Error in sendMessage controller: ", error);
