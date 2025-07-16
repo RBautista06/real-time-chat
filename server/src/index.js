@@ -1,15 +1,19 @@
 import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
+import path from "path";
+
+import { connectionDB } from "./lib/db.js";
+
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import { connectionDB } from "./lib/db.js";
-import cors from "cors";
-import { app, io, server } from "./lib/socket.js"; // import app from the socket so it will be real time
-import path from "path";
+import { app, server } from "./lib/socket.js"; // import app from the socket so it will be real time
+
 dotenv.config();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 const __dirname = path.resolve();
 
 app.use(express.json()); // converts the request body to json
